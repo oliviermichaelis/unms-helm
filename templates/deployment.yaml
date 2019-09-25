@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "unms.fullname" . }}
+  labels:
+{{ include "unms.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "unms.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "unms.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            {{ if .Values.service.dashboard.http.enabled }}
+            - name: http
+              containerPort: 80
+              protocol: TCP
+            {{ end }}
+            {{ if .Values.service.dashboard.https.enabled }}
+            - name: https
+              containerPort: 443
+              protocol: TCP
+            {{ end }}
+            {{ if .Values.service.netflow.enabled }}
+            - name: netflow
+              containerPort: 2055
+              protocol: UDP
+            {{ end }}
+          livenessProbe:
+            httpGet:
+              path: /nms/
+              port: 443
+              scheme: HTTPS
+            initialDelaySeconds: 140
+          readinessProbe:
+            httpGet:
+              path: /nms
+              port: 443
+              scheme: HTTPS
+            initialDelaySeconds: 80
+            failureThreshold: 12
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{ if .Values.data.enabled }}
+          volumeMounts:
+          - mountPath: /config
+            name: {{ .Values.data.name }}
+          {{ end }}
+      {{ if .Values.data.enabled }}
+      volumes:
+      - name: {{ .Values.data.name }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.data.name }}
+      {{ end }}
+
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

@@ -1,0 +1,50 @@
+{{ if .Values.service.dashboard.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-dashboard
+  labels:
+{{ include "unms.labels" . | indent 4 }}
+spec:
+  type: {{ .Values.service.dashboard.type }}
+  ports:
+    {{ if .Values.service.dashboard.http.enabled }}
+    - port: {{ .Values.service.dashboard.http.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+    {{ end }}
+    {{ if .Values.service.dashboard.https.enabled }}
+    - port: {{ .Values.service.dashboard.https.port }}
+      targetPort: https
+      protocol: TCP
+      name: https
+    {{ end }}
+  selector:
+    app.kubernetes.io/name: {{ include "unms.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+{{ end }}
+
+---
+
+{{ if .Values.service.netflow.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-netflow
+  labels:
+{{ include "unms.labels" . | indent 4 }}
+spec:
+  type: {{ .Values.service.netflow.type }}
+  {{ if .Values.service.netflow.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.service.netflow.loadBalancerIP }}
+  {{ end }}
+  ports:
+    - port: {{ .Values.service.netflow.port }}
+      targetPort: netflow
+      protocol: UDP
+      name: netflow
+  selector:
+    app.kubernetes.io/name: {{ include "unms.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+{{ end }}
