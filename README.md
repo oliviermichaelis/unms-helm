@@ -1,6 +1,6 @@
 # unms-helm
 
-unms-helm is a helm chart to run Ubiquiti Network Management System (UNMS) in kubernetes.
+**unms-helm** is a helm chart to run Ubiquiti Network Management System (UNMS) in kubernetes.
 The chart successfully runs on amd64 and on armv7/armhf (Raspberry Pi) architecture.
 
 ## Installation
