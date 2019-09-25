@@ -17,20 +17,21 @@ The following table lists the configurable parameters of the unms-helm chart
 | Parameter                      | Description                                                                                                          | Default                                           |
 | -------------------------------| ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
 | `replicaCount`                 | The number of replicas to run |
-| `image.repository`             | UNMS image name                                | None                        |
-| `image.tag`                    | The version of the UNMS image to use      | None                                          |
-| `imagePullSecrets`             | A list of image pull secrets (if needed)  | None                              |
+| `image.repository`             | UNMS image name | 
+| `image.tag`                    | The version of the UNMS image to use      |
+| `imagePullSecrets`             | A list of image pull secrets  |
 | `fullnameOverride` | Override the full resource names | `{release-name}-unms` (or `unms` if release-name is unms) |
-| `service.dashboard.type` | A valid Kubernetes service type| None                                    |
-| `service.dashboard.http.enabled` | Set to `false` if you want to disable http |
-| `service.dashboard.http.port` | Port used for http | 80 |
-| `service.dashboard.https.enabled` | Set to `false` if you want to disable https |
-| `service.dashboard.https.port` | Port used for https | 443 |
-| `service.netflow.enabled` | Set to `false` if you want to disable netflow |
+| `service.dashboard.enabled` | Set to `false` if you want to disable the dashboard service | `true` |
+| `service.dashboard.type` | A valid Kubernetes service type| `ClusterIP` |
+| `service.dashboard.http.enabled` | Set to `false` if you want to disable http | `true` |
+| `service.dashboard.http.port` | Port used for http | `80` |
+| `service.dashboard.https.enabled` | Set to `false` if you want to disable https | `true` |
+| `service.dashboard.https.port` | Port used for https | `443` |
+| `service.netflow.enabled` | Set to `false` if you want to disable netflow | `true` |
 | `service.netflow.type` | A valid Kubernetes service type | `LoadBalancer` |
 | `service.netflow.loadBalancerIP` | An available static IP you have reserved on your cloud platform |
 | `service.netflow.port` | Port used for netflow | `2055` |
-| `ingress.enabled` | Enable automatic creation of an ingress for the http/https |
+| `ingress.enabled` | Enable automatic creation of an ingress for the http/https | `true` |
 | `ingress.hosts[0].host` | The ingress host | `unms.example.com` |
 | `ingress.hosts[0].paths` | A valid path | `/` |
 | `data.enabled` | Set to `true` to use a persistentVolume | `true` |
