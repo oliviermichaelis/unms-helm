@@ -6,9 +6,9 @@ replicaCount: 1
 
 image:
   # Pick a repository of your choice
-  repository: oliviermichaelis/docker-unms
+  repository: nico640/docker-unms
   # Choose an image depending on the architecture
-  tag: 1.0.3-armv7
+  tag: 1.0.5-armhf
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
