@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ include "unms.fullname" . }}
   labels:
@@ -40,19 +40,19 @@ spec:
               containerPort: 2055
               protocol: UDP
             {{ end }}
-          livenessProbe:
-            httpGet:
-              path: /nms/
-              port: 443
-              scheme: HTTPS
-            initialDelaySeconds: 140
-          readinessProbe:
-            httpGet:
-              path: /nms
-              port: 443
-              scheme: HTTPS
-            initialDelaySeconds: 80
-            failureThreshold: 12
+            #          livenessProbe:
+            #httpGet:
+            #  path: /nms/
+            #  port: 443
+            #  scheme: HTTPS
+            #initialDelaySeconds: 200
+            #readinessProbe:
+            #httpGet:
+            #  path: /nms
+            #  port: 443
+            #  scheme: HTTPS
+            #initialDelaySeconds: 100
+            #failureThreshold: 12
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           {{ if .Values.data.enabled }}
