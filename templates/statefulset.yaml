@@ -6,6 +6,7 @@ metadata:
 {{ include "unms.labels" . | indent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  serviceName: "unms"
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "unms.name" . }}
