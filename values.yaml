@@ -11,6 +11,23 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+deployment:
+  env: {}
+  #- name: TZ
+  #  value: "Europe/London"
+  #- name: DEMO
+  #  value: "false"
+  #- name: PUBLIC_HTTPS_PORT
+  #  value: "443"
+  #- name: PUBLIC_WS_PORT
+  #  value: "443"
+  #- name: SECURE_LINK_SECRET
+  #  value: ""
+  #- name: SSL_CERT
+  #  value: ""
+  #- name: SSL_CERT_KEY
+  #  value: ""
+
 service:
   dashboard:
     enabled: true
@@ -27,6 +44,8 @@ service:
     type: LoadBalancer
     #loadBalancerIP:
     port: 2055
+
+
 
 ingress:
   enabled: false

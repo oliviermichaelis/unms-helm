@@ -54,6 +54,10 @@ spec:
             #  scheme: HTTPS
             #initialDelaySeconds: 100
             #failureThreshold: 12
+          {{- if .Values.deployment.env }}
+          env:
+            {{- toYaml .Values.deployment.env | nindent 12 }}
+          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           {{- if .Values.persistence.enabled }}
