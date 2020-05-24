@@ -17,7 +17,7 @@ spec:
   {{- if (eq "-" .Values.deployment.persistence.storageClass) }}
   storageClassName: ""
   {{- else }}
-  storageClassName: "{{ .Values.persistence.storageClass }}"
+  storageClassName: "{{ .Values.deployment.persistence.storageClass }}"
   {{- end }}
   {{- end }}
 {{ end }}
