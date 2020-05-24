@@ -1,5 +1,5 @@
-{{- if .Values.persistence.enabled }}
-{{- if .Values.persistence.existingClaim }}
+{{- if .Values.deployment.persistence.enabled }}
+{{- if .Values.deployment.persistence.existingClaim }}
 # skipped since existingClaim is set
 {{ else }}
 apiVersion: v1
@@ -13,8 +13,8 @@ spec:
   resources:
     requests:
       storage: 1Gi
-  {{- if .Values.persistence.storageClass }}
-  {{- if (eq "-" .Values.persistence.storageClass) }}
+  {{- if .Values.deployment.persistence.storageClass }}
+  {{- if (eq "-" .Values.deployment.persistence.storageClass) }}
   storageClassName: ""
   {{- else }}
   storageClassName: "{{ .Values.persistence.storageClass }}"

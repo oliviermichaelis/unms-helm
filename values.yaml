@@ -6,12 +6,30 @@ image:
   repository: docker.io/nico640/docker-unms
   tag: 1.2.0
   pullPolicy: IfNotPresent
-
-imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
+  imagePullSecrets: []
 
 deployment:
+  startupProbe:
+    httpGet:
+      path: /nms
+      port: http
+      scheme: HTTP
+    initialDelaySeconds: 300
+    timeoutSeconds: 5
+    failureThreshold: 45
+    periodSeconds: 10
+  livenessProbe:
+    httpGet:
+      path: /nms
+      port: http
+      scheme: HTTP
+    timeoutSeconds: 2
+  readinessProbe:
+    httpGet:
+      path: /nms
+      port: http
+      scheme: HTTP
+    timeoutSeconds: 1
   env: {}
   #- name: TZ
   #  value: "Europe/London"
@@ -27,6 +45,31 @@ deployment:
   #  value: ""
   #- name: SSL_CERT_KEY
   #  value: ""
+  persistence:
+    enabled: true
+    ## Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    storageClass: "-"
+    #existingClaim:
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
 
 service:
   dashboard:
@@ -45,8 +88,6 @@ service:
     #loadBalancerIP:
     port: 2055
 
-
-
 ingress:
   enabled: false
   annotations: {}
@@ -54,39 +95,7 @@ ingress:
     - host: unms.example.com
       paths:
         - /
-
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
-
-# Persistent Volume
-persistence:
-  enabled: true
-  ## Persistent Volume Storage Class
-  ## If defined, storageClassName: <storageClass>
-  ## If set to "-", storageClassName: "", which disables dynamic provisioning
-  ## If undefined (the default) or set to null, no storageClassName spec is
-  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
-  ##   GKE, AWS & OpenStack)
-  ##
-  storageClass: "-"
-  #existingClaim:
-
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
-
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}

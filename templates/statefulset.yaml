@@ -17,7 +17,7 @@ spec:
         app.kubernetes.io/name: {{ include "unms.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
-    {{- with .Values.imagePullSecrets }}
+    {{- with .Values.deployment.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
@@ -41,49 +41,48 @@ spec:
               containerPort: 2055
               protocol: UDP
             {{- end }}
-            #livenessProbe:
-            #httpGet:
-            #  path: /nms/
-            #  port: 443
-            #  scheme: HTTPS
-            #initialDelaySeconds: 200
-            #readinessProbe:
-            #httpGet:
-            #  path: /nms
-            #  port: 443
-            #  scheme: HTTPS
-            #initialDelaySeconds: 100
-            #failureThreshold: 12
+          {{- if .Values.deployment.startupProbe }}
+          startupProbe:
+            {{- toYaml .Values.deployment.startupProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.deployment.livenessProbe }}
+          livenessProbe:
+            {{- toYaml .Values.deployment.livenessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.deployment.readinessProbe}}
+          readinessProbe:
+            {{- toYaml .Values.deployment.readinessProbe | nindent 12 }}
+          {{- end }}
           {{- if .Values.deployment.env }}
           env:
             {{- toYaml .Values.deployment.env | nindent 12 }}
           {{- end }}
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-          {{- if .Values.persistence.enabled }}
+            {{- toYaml .Values.deployment.resources | nindent 12 }}
+          {{- if .Values.deployment.persistence.enabled }}
           volumeMounts:
           - mountPath: /config
             name: data
           {{- end }}
-      {{- if .Values.persistence.enabled }}
+      {{- if .Values.deployment.persistence.enabled }}
       volumes:
       - name: data
         persistentVolumeClaim:
-        {{- if .Values.persistence.existingClaim }}
-          claimName: {{ .Values.persistence.existingClaim}}
+        {{- if .Values.deployment.persistence.existingClaim }}
+          claimName: {{ .Values.deployment.persistence.existingClaim}}
         {{ else }}
           claimName: {{ include "unms.fullname" . }}
         {{- end }}
       {{ end }}
-      {{- with .Values.nodeSelector }}
+      {{- with .Values.deployment.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-    {{- with .Values.affinity }}
+    {{- with .Values.deployment.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-    {{- with .Values.tolerations }}
+    {{- with .Values.deployment.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
