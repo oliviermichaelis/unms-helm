@@ -1,8 +1,11 @@
-{{ if .Values.data.enabled }}
+{{- if .Values.persistence.enabled }}
+{{- if .Values.persistence.existingClaim }}
+# skipped since existingClaim is set
+{{ else }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ .Values.data.name }}
+  name: {{ include "unms.fullname" . }}
 spec:
   accessModes:
     - ReadWriteOnce
@@ -10,5 +13,12 @@ spec:
   resources:
     requests:
       storage: 1Gi
-  storageClassName: {{ .Values.data.storageClassName }}
+  {{- if .Values.persistence.storageClass }}
+  {{- if (eq "-" .Values.persistence.storageClass) }}
+  storageClassName: ""
+  {{- else }}
+  storageClassName: "{{ .Values.persistence.storageClass }}"
+  {{- end }}
+  {{- end }}
+{{ end }}
 {{ end }}

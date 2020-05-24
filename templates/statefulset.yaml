@@ -5,7 +5,7 @@ metadata:
   labels:
 {{ include "unms.labels" . | indent 4 }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   serviceName: "unms"
   selector:
     matchLabels:
@@ -26,22 +26,22 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            {{ if .Values.service.dashboard.http.enabled }}
+            {{- if .Values.service.dashboard.http.enabled }}
             - name: http
               containerPort: 80
               protocol: TCP
-            {{ end }}
-            {{ if .Values.service.dashboard.https.enabled }}
+            {{- end }}
+            {{- if .Values.service.dashboard.https.enabled }}
             - name: https
               containerPort: 443
               protocol: TCP
-            {{ end }}
-            {{ if .Values.service.netflow.enabled }}
+            {{- end }}
+            {{- if .Values.service.netflow.enabled }}
             - name: netflow
               containerPort: 2055
               protocol: UDP
-            {{ end }}
-            #          livenessProbe:
+            {{- end }}
+            #livenessProbe:
             #httpGet:
             #  path: /nms/
             #  port: 443
@@ -56,18 +56,21 @@ spec:
             #failureThreshold: 12
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          {{ if .Values.data.enabled }}
+          {{- if .Values.persistence.enabled }}
           volumeMounts:
           - mountPath: /config
-            name: {{ .Values.data.name }}
-          {{ end }}
-      {{ if .Values.data.enabled }}
+            name: data
+          {{- end }}
+      {{- if .Values.persistence.enabled }}
       volumes:
-      - name: {{ .Values.data.name }}
+      - name: data
         persistentVolumeClaim:
-          claimName: {{ .Values.data.name }}
+        {{- if .Values.persistence.existingClaim }}
+          claimName: {{ .Values.persistence.existingClaim}}
+        {{ else }}
+          claimName: {{ include "unms.fullname" . }}
+        {{- end }}
       {{ end }}
-
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

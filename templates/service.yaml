@@ -8,23 +8,22 @@ metadata:
 spec:
   type: {{ .Values.service.dashboard.type }}
   ports:
-    {{ if .Values.service.dashboard.http.enabled }}
+    {{- if .Values.service.dashboard.http.enabled }}
     - port: {{ .Values.service.dashboard.http.port }}
       targetPort: http
       protocol: TCP
       name: http
-    {{ end }}
-    {{ if .Values.service.dashboard.https.enabled }}
+    {{- end }}
+    {{- if .Values.service.dashboard.https.enabled }}
     - port: {{ .Values.service.dashboard.https.port }}
       targetPort: https
       protocol: TCP
       name: https
-    {{ end }}
+    {{- end }}
   selector:
     app.kubernetes.io/name: {{ include "unms.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
 {{ end }}
-
 ---
 
 {{ if .Values.service.netflow.enabled }}
@@ -36,9 +35,9 @@ metadata:
 {{ include "unms.labels" . | indent 4 }}
 spec:
   type: {{ .Values.service.netflow.type }}
-  {{ if .Values.service.netflow.loadBalancerIP }}
+  {{- if .Values.service.netflow.loadBalancerIP }}
   loadBalancerIP: {{ .Values.service.netflow.loadBalancerIP }}
-  {{ end }}
+  {{- end }}
   ports:
     - port: {{ .Values.service.netflow.port }}
       targetPort: netflow
