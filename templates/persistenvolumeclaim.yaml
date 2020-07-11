@@ -1,7 +1,5 @@
 {{- if .Values.deployment.persistence.enabled }}
-{{- if .Values.deployment.persistence.existingClaim }}
-# skipped since existingClaim is set
-{{ else }}
+{{- if not .Values.deployment.persistence.existingClaim }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
